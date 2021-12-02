@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 public class Main {
-    public static SubmarineTypeAPosition runSubmarineA(Stream<String> inputLines) {
+    public static SubmarineTypeAPosition runTypeASubmarine(Stream<String> inputLines) {
         Iterator<String> it = inputLines.iterator();
 
         SubmarineTypeAPosition position = new SubmarineTypeAPosition();
@@ -19,7 +19,7 @@ public class Main {
         return position;
     }
 
-    public static SubmarineTypeBPosition runSubmarineB(Stream<String> inputLines) {
+    public static SubmarineTypeBPosition runTypeBSubmarine(Stream<String> inputLines) {
         Iterator<String> it = inputLines.iterator();
 
         SubmarineTypeBPosition position = new SubmarineTypeBPosition();
@@ -38,13 +38,13 @@ public class Main {
         System.out.print("Day 02a: ");
         inputLines = Utils.getInputFileLinesStream("day02.txt");
         assert inputLines != null;
-        SubmarineTypeAPosition finalPositionA = runSubmarineA(inputLines);
+        SubmarineTypeAPosition finalPositionA = runTypeASubmarine(inputLines);
         System.out.println(finalPositionA.horizontalPosition * finalPositionA.verticalPosition);
 
         System.out.print("Day 02b: ");
         inputLines = Utils.getInputFileLinesStream("day02.txt");
         assert inputLines != null;
-        SubmarineTypeBPosition finalPositionB = runSubmarineB(inputLines);
+        SubmarineTypeBPosition finalPositionB = runTypeBSubmarine(inputLines);
         System.out.println(finalPositionB.horizontalPosition * finalPositionB.verticalPosition);
     }
 }
