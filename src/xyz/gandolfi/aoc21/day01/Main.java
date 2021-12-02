@@ -1,11 +1,14 @@
-package xyz.gandolfi.aoc21;
+package xyz.gandolfi.aoc21.day01;
+
+import xyz.gandolfi.aoc21.Utils;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.stream.Stream;
 
-public class Day01 {
-    public static int countIncreases(String fileContent, int windowSize) {
-        Iterator<Integer> it = fileContent.lines().map(Integer::parseInt).iterator();
+public class Main {
+    public static int countIncreases(Stream<String> inputLines, int windowSize) {
+        Iterator<Integer> it = inputLines.map(Integer::parseInt).iterator();
 
         int increasesCount = 0;
         int prevWindowSum = 0;
@@ -30,13 +33,16 @@ public class Day01 {
     }
 
     public static void main(String[] args) {
-        String fileContent = Utils.readFile("day01.txt");
-        assert fileContent != null;
+        Stream<String> inputLines;
 
         System.out.print("Day 01a: ");
-        System.out.println(countIncreases(fileContent, 1));
+        inputLines = Utils.getInputFileLinesStream("day01.txt");
+        assert inputLines != null;
+        System.out.println(countIncreases(inputLines, 1));
 
         System.out.print("Day 01b: ");
-        System.out.println(countIncreases(fileContent, 3));
+        inputLines = Utils.getInputFileLinesStream("day01.txt");
+        assert inputLines != null;
+        System.out.println(countIncreases(inputLines, 3));
     }
 }
