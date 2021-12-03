@@ -3,7 +3,7 @@ package xyz.gandolfi.aoc21.day02;
 public class SubmarineCommand {
     private int horizontalCoefficient = 0;
     private int verticalCoefficient = 0;
-    private int units;
+    private final int units;
     private SubmarineDirection direction;
 
     public SubmarineCommand(String command) {

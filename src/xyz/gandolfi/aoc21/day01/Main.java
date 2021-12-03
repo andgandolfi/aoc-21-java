@@ -2,21 +2,17 @@ package xyz.gandolfi.aoc21.day01;
 
 import xyz.gandolfi.aoc21.Utils;
 
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.stream.Stream;
+import java.util.List;
 
 public class Main {
-    public static int countIncreases(Stream<String> inputLines, int windowSize) {
-        Iterator<Integer> it = inputLines.map(Integer::parseInt).iterator();
-
+    public static int countIncreases(List<Integer> inputLines, int windowSize) {
         int increasesCount = 0;
         int prevWindowSum = 0;
         int currWindowSum = 0;
         LinkedList<Integer> queue = new LinkedList<>();
 
-        while (it.hasNext()) {
-            int val = it.next();
+        for (Integer val : inputLines) {
             if (queue.size() < windowSize) {
                 queue.addLast(val);
                 prevWindowSum += val;
@@ -33,16 +29,14 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Stream<String> inputLines;
+        List<String> inputLines = Utils.getInputFileLines("day01.txt");
+        assert inputLines != null;
+        List<Integer> inputNums = inputLines.stream().map(Integer::parseInt).toList();
 
         System.out.print("Day 01a: ");
-        inputLines = Utils.getInputFileLinesStream("day01.txt");
-        assert inputLines != null;
-        System.out.println(countIncreases(inputLines, 1));
+        System.out.println(countIncreases(inputNums, 1));
 
         System.out.print("Day 01b: ");
-        inputLines = Utils.getInputFileLinesStream("day01.txt");
-        assert inputLines != null;
-        System.out.println(countIncreases(inputLines, 3));
+        System.out.println(countIncreases(inputNums, 3));
     }
 }

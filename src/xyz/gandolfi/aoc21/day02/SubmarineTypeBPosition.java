@@ -12,12 +12,11 @@ public class SubmarineTypeBPosition extends SubmarinePosition {
         this.aim = aim;
     }
 
-    public SubmarineTypeBPosition applyCommand(SubmarineCommand command) {
+    public void applyCommand(SubmarineCommand command) {
         this.aim += command.getVerticalCoefficient() * command.getUnits();
         if (command.getDirection() == SubmarineDirection.FORWARD) {
             this.horizontalPosition += command.getHorizontalCoefficient() * command.getUnits();
             this.verticalPosition += this.aim * command.getUnits();
         }
-        return this;
     }
 }

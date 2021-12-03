@@ -11,7 +11,7 @@ public abstract class SubmarinePosition {
         this.verticalPosition = verticalPosition;
     }
 
-    public abstract SubmarinePosition applyCommand(SubmarineCommand command);
+    public abstract void applyCommand(SubmarineCommand command);
 
     @Override
     public String toString() {
