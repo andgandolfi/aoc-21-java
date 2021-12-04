@@ -5,24 +5,19 @@ import xyz.gandolfi.aoc21.Utils;
 import java.util.List;
 
 public class Main {
-    public static SubmarinePosition runSubmarine(List<String> inputLines, SubmarinePosition initialPosition) {
-        for (String cmd: inputLines) {
-            initialPosition.applyCommand(new SubmarineCommand(cmd));
-        }
-
-        return initialPosition;
-    }
-
     public static void main(String[] args) {
         List<String> inputLines = Utils.getInputFileLines("day02.txt");
         assert inputLines != null;
+        List<SubmarineCommand> commands = inputLines.stream().map(SubmarineCommand::new).toList();
 
         System.out.print("Day 02a: ");
-        SubmarinePosition finalPositionA = runSubmarine(inputLines, new SubmarineTypeAPosition());
-        System.out.println(finalPositionA.horizontalPosition * finalPositionA.verticalPosition);
+        Submarine submarineA = new SubmarineTypeA();
+        submarineA.runSubmarine(commands);
+        System.out.println(submarineA.horizontalPosition * submarineA.verticalPosition);
 
         System.out.print("Day 02b: ");
-        SubmarinePosition finalPositionB = runSubmarine(inputLines, new SubmarineTypeBPosition());
-        System.out.println(finalPositionB.horizontalPosition * finalPositionB.verticalPosition);
+        Submarine submarineB = new SubmarineTypeB();
+        submarineB.runSubmarine(commands);
+        System.out.println(submarineB.horizontalPosition * submarineB.verticalPosition);
     }
 }

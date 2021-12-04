@@ -1,17 +1,24 @@
 package xyz.gandolfi.aoc21.day02;
 
-public abstract class SubmarinePosition {
+import java.util.List;
+
+public abstract class Submarine {
     protected int horizontalPosition = 0;
     protected int verticalPosition = 0;
 
-    public SubmarinePosition() {}
+    public Submarine() {}
 
-    public SubmarinePosition(int horizontalPosition, int verticalPosition) {
+    public Submarine(int horizontalPosition, int verticalPosition) {
         this.horizontalPosition = horizontalPosition;
         this.verticalPosition = verticalPosition;
     }
 
     public abstract void applyCommand(SubmarineCommand command);
+
+    public void runSubmarine(List<SubmarineCommand> commands) {
+        for (SubmarineCommand cmd: commands)
+            this.applyCommand(cmd);
+    }
 
     @Override
     public String toString() {

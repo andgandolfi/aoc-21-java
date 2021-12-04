@@ -1,13 +1,13 @@
 package xyz.gandolfi.aoc21.day02;
 
-public class SubmarineTypeBPosition extends SubmarinePosition {
+public class SubmarineTypeB extends Submarine {
     int aim = 0;
 
-    public SubmarineTypeBPosition() {
+    public SubmarineTypeB() {
         super();
     }
 
-    public SubmarineTypeBPosition(int horizontalPosition, int verticalPosition, int aim) {
+    public SubmarineTypeB(int horizontalPosition, int verticalPosition, int aim) {
         super(horizontalPosition, verticalPosition);
         this.aim = aim;
     }
