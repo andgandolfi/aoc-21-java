@@ -10,9 +10,13 @@ public class Main {
         assert inputLines != null;
 
         System.out.print("Day 04a: ");
-        System.out.println();
+        BingoGame gameA = new BingoGame(inputLines);
+        gameA.playGameUntilFirstWin();
+        System.out.println(gameA.getLastExtracted() * gameA.getWinningBoard().getSumOfUnmarkedNumbers());
 
         System.out.print("Day 04b: ");
-        System.out.println();
+        BingoGame gameB = new BingoGame(inputLines);
+        gameB.playGameUntilAllWin();
+        System.out.println(gameB.getLastExtracted() * gameB.getWinningBoard().getSumOfUnmarkedNumbers());
     }
 }
