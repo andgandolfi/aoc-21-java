@@ -10,9 +10,12 @@ public class Main {
         assert inputLines != null;
 
         System.out.print("Day 05a: ");
-        System.out.println();
+        Diagram diagramA = new Diagram(inputLines);
+        diagramA.discardDiagonalLines();
+        System.out.println(diagramA.findOverlaps());
 
         System.out.print("Day 05b: ");
-        System.out.println();
+        Diagram diagramB = new Diagram(inputLines);
+        System.out.println(diagramB.findOverlaps());
     }
 }
