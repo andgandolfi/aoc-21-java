@@ -35,7 +35,7 @@ public class Calculators {
         return Integer.parseInt(epsilon.toString(), 2);
     }
 
-    public static int countBitsBasedOnPrevious(List<String> inputLines, boolean keepOnes) {
+    private static int countBitsBasedOnPrevious(List<String> inputLines, boolean keepOnes) {
         if (inputLines == null || inputLines.isEmpty()) return 0;
 
         List<String> nums = inputLines;
