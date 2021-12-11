@@ -10,9 +10,13 @@ public class Main {
         assert inputLines != null;
 
         System.out.print("Day 11a: ");
-        System.out.println();
+        EnergyLevels evolverA = new EnergyLevels(inputLines);
+        evolverA.evolveNSteps(100);
+        System.out.println(evolverA.getFlashesCount());
 
         System.out.print("Day 11b: ");
-        System.out.println();
+        EnergyLevels evolverB = new EnergyLevels(inputLines);
+        evolverB.evolveUntilAllFlash();
+        System.out.println(evolverB.getSteps());
     }
 }
