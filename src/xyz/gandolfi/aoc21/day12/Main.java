@@ -9,10 +9,12 @@ public class Main {
         List<String> inputLines = Utils.getInputFileLines("day12.txt");
         assert inputLines != null;
 
+        PassagesGraph graph = new PassagesGraph(inputLines);
+
         System.out.print("Day 12a: ");
-        System.out.println();
+        System.out.println(graph.countAllPaths());
 
         System.out.print("Day 12b: ");
-        System.out.println();
+        System.out.println(graph.countAllPathsSmallTwice());
     }
 }
