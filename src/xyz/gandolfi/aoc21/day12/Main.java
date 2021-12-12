@@ -15,6 +15,10 @@ public class Main {
         System.out.println(graph.countAllPaths());
 
         System.out.print("Day 12b: ");
+//        long startTime = System.nanoTime();
         System.out.println(graph.countAllPathsSmallTwice());
+//        long endTime = System.nanoTime();
+//        long duration = (endTime - startTime);
+//        System.out.println(duration / 1e6);
     }
 }

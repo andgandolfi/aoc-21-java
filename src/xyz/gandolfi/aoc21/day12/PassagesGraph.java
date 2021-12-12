@@ -1,9 +1,13 @@
 package xyz.gandolfi.aoc21.day12;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PassagesGraph {
     private final Map<String, Set<String>> graph;
+    // This memoization cache improve performance by x5/6 times
+    // On my machine it's ~80ms vs ~550ms
+    private Map<String, Integer> memoizationCache;
 
     public PassagesGraph(List<String> inputLines) {
         graph = new HashMap<>();
@@ -23,6 +27,7 @@ public class PassagesGraph {
     }
 
     public int countAllPathsSmallTwice() {
+        memoizationCache = new HashMap<>();
         return countAllPathsSmallTwice("start", new HashSet<>(), null);
     }
 
@@ -46,6 +51,11 @@ public class PassagesGraph {
 
     private int countAllPathsSmallTwice(String vertex, Set<String> smallsAlreadyVisited,
                                         String smallCaveAlreadyVisitedTwice) {
+        String smallsAlreadyVisitedJoining = smallsAlreadyVisited.stream().sorted().collect(Collectors.joining(","));
+        String cacheKey = vertex + "|" + smallsAlreadyVisitedJoining + "|" + smallCaveAlreadyVisitedTwice;
+        if (memoizationCache.containsKey(cacheKey))
+            return memoizationCache.get(cacheKey);
+
         if (vertex.equals("start") && !smallsAlreadyVisited.isEmpty())
             return 0;
         if (vertex.equals("end"))
@@ -74,6 +84,8 @@ public class PassagesGraph {
             sum += countAllPathsSmallTwice(neighbor, smallsAlreadyVisitedCopy,
                                            smallCaveAlreadyVisitedTwiceCopy);
         }
+
+        memoizationCache.put(cacheKey, sum);
         return sum;
     }
 
