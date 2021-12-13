@@ -9,10 +9,26 @@ public class Main {
         List<String> inputLines = Utils.getInputFileLines("day13.txt");
         assert inputLines != null;
 
+        List<Coordinates> dots = inputLines.stream()
+            .takeWhile(s -> s.trim().length() > 0)
+            .map(Coordinates::new)
+            .toList();
+
+        List<Fold> folds = inputLines.stream()
+            .dropWhile(s -> s.trim().length() > 0)
+            .skip(1)
+            .map(Fold::new)
+            .toList();
+
         System.out.print("Day 13a: ");
-        System.out.println();
+        TransparentPaper paperA = new TransparentPaper(dots);
+        paperA.applyFold(folds.get(0));
+        System.out.println(paperA.countVisibleDots());
 
         System.out.print("Day 13b: ");
+        TransparentPaper paperB = new TransparentPaper(dots);
+        paperB.applyFold(folds);
         System.out.println();
+        System.out.println(paperB);
     }
 }
