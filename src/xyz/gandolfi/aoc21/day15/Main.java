@@ -9,10 +9,13 @@ public class Main {
         List<String> inputLines = Utils.getInputFileLines("day15.txt");
         assert inputLines != null;
 
+        RiskLevelMap riskLevelMap = new RiskLevelMap(inputLines);
+
         System.out.print("Day 15a: ");
-        System.out.println();
+        System.out.println(riskLevelMap.getLowestRiskPath());
 
         System.out.print("Day 15b: ");
-        System.out.println();
+        riskLevelMap.expandMap(5);
+        System.out.println(riskLevelMap.getLowestRiskPath());
     }
 }
