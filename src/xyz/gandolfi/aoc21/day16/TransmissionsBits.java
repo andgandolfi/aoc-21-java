@@ -8,11 +8,6 @@ public class TransmissionsBits {
         this.bits = bits;
     }
 
-    public TransmissionsBits(String bits, int cursorPosition) {
-        this.bits = bits;
-        this.cursor = cursorPosition;
-    }
-
     public static TransmissionsBits parseHexInput(String hexInputString) {
         StringBuilder sb = new StringBuilder(hexInputString.length() * 4);
         for (char c : hexInputString.toCharArray()) {
