@@ -9,10 +9,14 @@ public class Main {
         List<String> inputLines = Utils.getInputFileLines("day16.txt");
         assert inputLines != null;
 
+        TransmissionsBits bits = TransmissionsBits.parseHexInput(inputLines.get(0));
+        Packet topPacket = Packet.parseBits(bits);
+        assert topPacket != null;
+
         System.out.print("Day 16a: ");
-        System.out.println();
+        System.out.println(topPacket.sumAllVersionNumbers());
 
         System.out.print("Day 16b: ");
-        System.out.println();
+        System.out.println(topPacket.runOperations());
     }
 }
