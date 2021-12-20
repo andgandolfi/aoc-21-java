@@ -47,6 +47,5 @@ public class Main {
             for (int j = 0; j < origins.size(); ++j)
                 maxOriginsDistance = Math.max(maxOriginsDistance, origins.get(i).getManhattanDistanceFrom(origins.get(j)));
         System.out.println(maxOriginsDistance);
-        System.out.println(origins);
     }
 }

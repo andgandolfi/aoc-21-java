@@ -22,16 +22,17 @@ public class BeaconSpace {
     private void alignAllScanners() {
         Set<Integer> visited = new HashSet<>();
         LinkedList<Integer> toBeVisited = new LinkedList<>();
+        visited.add(0);
         toBeVisited.addLast(0);
         while (!toBeVisited.isEmpty()) {
             int scannerId = toBeVisited.removeFirst();
-            visited.add(scannerId);
             BeaconScanner scannerA = scanners.get(scannerId);
             for (BeaconScanner scannerB : scanners.values()) {
                 if (scannerB.getId() == scannerId || visited.contains(scannerB.getId()))
                     continue;
                 BeaconScannersOverlap overlap = BeaconScannersOverlap.findOverlap(scannerA, scannerB);
                 if (overlap != null) {
+                    visited.add(scannerB.getId());
                     toBeVisited.addLast(scannerB.getId());
                     scanners.put(scannerB.getId(), overlap.transformScannerBToScannerARotationAndOrigin());
                     origins.put(scannerB.getId(), overlap.getOrigin());
