@@ -9,7 +9,7 @@ public class Image {
     private final Set<Pixel> pixels;
     private final Pixel topLeftCorner;
     private final Pixel bottomRightCorner;
-    private boolean isSurroundingSpaceEmpty;
+    private final boolean isSurroundingSpaceEmpty;
 
     public Image(String imgEnhancementAlgo, Set<Pixel> pixels) {
         this(imgEnhancementAlgo, pixels, true);
@@ -71,17 +71,16 @@ public class Image {
     }
 
     private boolean isEnhanced(int px, int py) {
-        StringBuilder binaryNum = new StringBuilder();
+        int pos = 0;
         for (int y = py - 1; y <= py + 1; ++y)
             for (int x = px - 1; x <= px + 1; ++x) {
+                pos *= 2;
                 if (x >= topLeftCorner.getX() && x <= bottomRightCorner.getX() &&
                      y >= topLeftCorner.getY() && y <= bottomRightCorner.getY()) {
-                    binaryNum.append(pixels.contains(new Pixel(x, y)) ? "1" : "0");
-                } else {
-                    binaryNum.append(isSurroundingSpaceEmpty ? "0" : "1");
-                }
+                    pos += pixels.contains(new Pixel(x, y)) ? 1 : 0;
+                } else
+                    pos += isSurroundingSpaceEmpty ? 0 : 1;
             }
-        int pos = Integer.parseInt(binaryNum.toString(), 2);
         return imgEnhancementAlgo.charAt(pos) == '#';
     }
 
