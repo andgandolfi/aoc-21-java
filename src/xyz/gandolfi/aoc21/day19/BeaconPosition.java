@@ -1,25 +1,23 @@
-package xyz.gandolfi.aoc21.day19wip;
+package xyz.gandolfi.aoc21.day19;
 
 import java.util.Objects;
 
-public class Position {
+public class BeaconPosition {
     private final int x;
     private final int y;
     private final int z;
 
-    public Position(int x, int y, int z) {
+    public BeaconPosition(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public static Position parsePosition(String csv) {
+    public BeaconPosition(String csv) {
         String[] parts = csv.split(",");
-        return new Position(
-            Integer.parseInt(parts[0]),
-            Integer.parseInt(parts[1]),
-            Integer.parseInt(parts[2])
-        );
+        this.x = Integer.parseInt(parts[0]);
+        this.y = Integer.parseInt(parts[1]);
+        this.z = Integer.parseInt(parts[2]);
     }
 
     public int getX() {
@@ -34,31 +32,35 @@ public class Position {
         return z;
     }
 
-    public Position distanceFrom(Position other) {
-        return new Position(
+    /*
+    * Distance that I have to remove from "other" to get to "this" position
+    */
+    public BeaconPosition distance(BeaconPosition other) {
+        return new BeaconPosition(
             x - other.getX(),
             y - other.getY(),
             z - other.getZ()
         );
     }
 
-    public Position add(Position other) {
-        return new Position(
+    public BeaconPosition add(BeaconPosition other) {
+        return new BeaconPosition(
             x + other.getX(),
             y + other.getY(),
             z + other.getZ()
         );
     }
 
-    public Position flip() {
-        return new Position(-x, -y, -z);
+    public int getManhattanDistanceFrom(BeaconPosition other) {
+        BeaconPosition dist = this.distance(other);
+        return Math.abs(dist.getX()) + Math.abs(dist.getY()) + Math.abs(dist.getZ());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Position position = (Position) o;
+        BeaconPosition position = (BeaconPosition) o;
         return x == position.x && y == position.y && z == position.z;
     }
 

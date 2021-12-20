@@ -1,13 +1,13 @@
-package xyz.gandolfi.aoc21.day19wip;
+package xyz.gandolfi.aoc21.day19;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
-public class Scanner {
+public class BeaconScanner {
     private final int id;
-    private final Set<Position> positions;
+    private final List<BeaconPosition> positions;
 
-    public Scanner(int id, Set<Position> positions) {
+    public BeaconScanner(int id, List<BeaconPosition> positions) {
         this.id = id;
         this.positions = positions;
     }
@@ -16,7 +16,7 @@ public class Scanner {
         return id;
     }
 
-    public Set<Position> getPositions() {
+    public List<BeaconPosition> getPositions() {
         return positions;
     }
 
@@ -24,7 +24,7 @@ public class Scanner {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Scanner scanner = (Scanner) o;
+        BeaconScanner scanner = (BeaconScanner) o;
         return id == scanner.id;
     }
 
