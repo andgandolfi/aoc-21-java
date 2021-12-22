@@ -9,10 +9,18 @@ public class Main {
         List<String> inputLines = Utils.getInputFileLines("day22.txt");
         assert inputLines != null;
 
+        List<RebootStep> rebootSteps = inputLines.stream()
+            .map(RebootStep::new)
+            .toList();
+
+        final Cuboid spaceLimit = new Cuboid(new Point(-50, -50, -50), new Point(50, 50, 50));
+
         System.out.print("Day 22a: ");
-        System.out.println();
+        Reactor reactorA = new Reactor(rebootSteps, spaceLimit);
+        System.out.println(reactorA.countActiveCubes());
 
         System.out.print("Day 22b: ");
-        System.out.println();
+        Reactor reactorB = new Reactor(rebootSteps);
+        System.out.println(reactorB.countActiveCubes());
     }
 }
