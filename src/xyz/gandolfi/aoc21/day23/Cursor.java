@@ -23,12 +23,16 @@ public class Cursor {
         return new Cursor(this.x + x, this.y + y);
     }
 
-    public boolean isInAllowedSpace() {
-        return (y == 0 && x >= 0 && x < 11) || ((y == 1 || y == 2) && (x == 2 || x == 4 || x == 6 || x == 8));
+    public boolean isInAllowedSpace(int slotsHeight) {
+        return (y == 0 && x >= 0 && x < 11) || (y >= 1 && y <= slotsHeight && (x == 2 || x == 4 || x == 6 || x == 8));
     }
 
-    public char expectedChar() {
-        if (y != 1 && y != 2)
+    public boolean isBlockingSpaceInFrontOfRoom() {
+        return y == 0 && (x == 2 || x == 4 || x == 6 || x == 8);
+    }
+
+    public char expectedChar(int slotsHeight) {
+        if (y < 1 && y > slotsHeight)
             return 0;
 
         return switch (x) {

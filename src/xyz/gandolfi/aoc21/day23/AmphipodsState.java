@@ -3,21 +3,17 @@ package xyz.gandolfi.aoc21.day23;
 import java.util.*;
 
 public class AmphipodsState {
-    private char[][] diagram;
-    private AmphipodState state;
-    private Cursor cursor;
+    private final char[][] diagram;
+    private final AmphipodState state;
+    private final Cursor cursor;
     private int energy;
-
-    // TODO: cache for DP?
-
-    private AmphipodsState() {}
 
     public AmphipodsState(List<List<Character>> initConfig) {
         energy = 0;
         state = AmphipodState.STABLE;
         cursor = new Cursor(0, 0);
-        diagram = new char[3][11];
-        for (int i = 0; i < 2; ++i)
+        diagram = new char[initConfig.size() + 1][11];
+        for (int i = 0; i < initConfig.size(); ++i)
             for (int j = 0; j < 4; ++j)
                 diagram[i+1][(j+1)*2] = initConfig.get(i).get(j);
     }
@@ -40,10 +36,6 @@ public class AmphipodsState {
             case 'D' -> 1000;
             default -> throw new IllegalStateException("Unexpected value: " + diagram[next.getY()][next.getX()]);
         };
-//        System.out.println(this);
-//        System.out.println("energy: " + energy);
-//        System.out.println("state: " + state);
-//        System.out.println();
     }
 
     public static int run(AmphipodsState initState) {
@@ -54,8 +46,6 @@ public class AmphipodsState {
 
         while (!queue.isEmpty()) {
             AmphipodsState state = queue.remove();
-//            if (AmphipodsState.isMyCase(state))
-//                System.out.println(state);
             if (visited.contains(state))
                 continue;
             if (state.isStable())
@@ -66,27 +56,10 @@ public class AmphipodsState {
                 bestTotalEnergy = state.getEnergy();
                 continue;
             }
-            var nextStates = state.evolve();
-            queue.addAll(nextStates);
+            queue.addAll(state.evolve());
         }
 
         return bestTotalEnergy;
-    }
-
-    private static boolean isMyCase(AmphipodsState state) {
-        if (state.state != AmphipodState.MOVE_BACK) return false;
-        if (!new Cursor(4, 2).equals(state.cursor)) return false;
-
-        char[][] mystate = new char[][]{
-                new char[]{ 0 , 0 , 0 , 0 , 0 ,'D', 0 , 0 , 0 , 0 , 0 },
-                new char[]{ 0 , 0 ,'B', 0 , 0 , 0 ,'C', 0 ,'D', 0 , 0 },
-                new char[]{ 0 , 0 ,'A', 0 ,'B', 0 ,'C', 0 ,'A', 0 , 0 }
-        };
-        for (int y = 0; y < 3; ++y)
-            for (int x = 0; x < 11; ++x)
-                if (mystate[y][x] != state.diagram[y][x])
-                    return false;
-        return true;
     }
 
     public List<AmphipodsState> evolve() {
@@ -94,7 +67,7 @@ public class AmphipodsState {
         switch (this.state) {
             case STABLE -> {
                 // MOVE_UP all 8 Amphipods up
-                for (int i = 0; i < 2; ++i)
+                for (int i = 0; i < diagram.length - 1; ++i)
                     for (int j = 0; j < 4; ++j)
                         nextStates.addAll(moveUp(new Cursor((j + 1) * 2, i + 1)));
 
@@ -113,28 +86,27 @@ public class AmphipodsState {
 
     private List<AmphipodsState> moveUp(Cursor cursor) {
         List<AmphipodsState> nextStates = new ArrayList<>();
-        if (!cursor.isInAllowedSpace() || charAt(cursor) == 0)
+        if (!cursor.isInAllowedSpace(diagram.length - 1) || charAt(cursor) == 0)
             return nextStates;
         if (cursor.getY() == 0) {
             Cursor left = cursor.getCursorInDir(-1, 0);
-            if (left.isInAllowedSpace() && charAt(left) == 0)
+            if (left.isInAllowedSpace(diagram.length - 1) && charAt(left) == 0)
                 nextStates.add(new AmphipodsState(this, cursor, left, AmphipodState.MOVE_LEFT));
             Cursor right = cursor.getCursorInDir(1, 0);
-            if (right.isInAllowedSpace() && charAt(right) == 0)
+            if (right.isInAllowedSpace(diagram.length - 1) && charAt(right) == 0)
                 nextStates.add(new AmphipodsState(this, cursor, right, AmphipodState.MOVE_RIGHT));
             return nextStates;
-        }
-        if (cursor.getY() == 2) {
-            if (cursor.expectedChar() == diagram[2][cursor.getX()])
-                return nextStates;
-            if (diagram[1][cursor.getX()] != 0)
-                return nextStates;
-        }
-        if (cursor.getY() == 1) {
-            if (diagram[1][cursor.getX()] == cursor.expectedChar() &&
-                    charAt(cursor.getCursorInDir(0, 1)) == cursor.expectedChar())
-                return nextStates;
-            if (diagram[0][cursor.getX()] != 0)
+        } else {
+            for (int y = 0; y < cursor.getY(); ++y)
+                if (diagram[y][cursor.getX()] != 0) // if something blocks it can't move up
+                    return nextStates;
+            boolean allRightCharBelow = true;
+            for (int y = cursor.getY(); y < diagram.length; ++y)
+                if (diagram[y][cursor.getX()] != cursor.expectedChar(diagram.length - 1)) {
+                    allRightCharBelow = false;
+                    break;
+                }
+            if (allRightCharBelow)
                 return nextStates;
         }
         nextStates.add(new AmphipodsState(this, cursor, cursor.getCursorInDir(0, -1), AmphipodState.MOVE_UP));
@@ -143,37 +115,45 @@ public class AmphipodsState {
 
     private List<AmphipodsState> moveLeft(Cursor cursor) {
         List<AmphipodsState> nextStates = new ArrayList<>();
-        if (!cursor.isInAllowedSpace() || charAt(cursor) == 0)
+        if (!cursor.isInAllowedSpace(diagram.length - 1) || charAt(cursor) == 0)
             return nextStates;
         Cursor left = cursor.getCursorInDir(-1, 0);
-        if (left.isInAllowedSpace() && charAt(left) == 0)
+        if (left.isInAllowedSpace(diagram.length - 1) && charAt(left) == 0)
             nextStates.add(new AmphipodsState(this, cursor, left, AmphipodState.MOVE_LEFT));
-        nextStates.add(new AmphipodsState(this, cursor, cursor, AmphipodState.STABLE));
+        if (!cursor.isBlockingSpaceInFrontOfRoom())
+            nextStates.add(new AmphipodsState(this, cursor, cursor, AmphipodState.STABLE));
         return nextStates;
     }
 
     private List<AmphipodsState> moveRight(Cursor cursor) {
         List<AmphipodsState> nextStates = new ArrayList<>();
-        if (!cursor.isInAllowedSpace() || charAt(cursor) == 0)
+        if (!cursor.isInAllowedSpace(diagram.length - 1) || charAt(cursor) == 0)
             return nextStates;
         Cursor right = cursor.getCursorInDir(1, 0);
-        if (right.isInAllowedSpace() && charAt(right) == 0)
+        if (right.isInAllowedSpace(diagram.length - 1) && charAt(right) == 0)
             nextStates.add(new AmphipodsState(this, cursor, right, AmphipodState.MOVE_RIGHT));
-        nextStates.add(new AmphipodsState(this, cursor, cursor, AmphipodState.STABLE));
+        if (!cursor.isBlockingSpaceInFrontOfRoom())
+            nextStates.add(new AmphipodsState(this, cursor, cursor, AmphipodState.STABLE));
         return nextStates;
     }
 
     private List<AmphipodsState> moveBack(Cursor cursor) {
         List<AmphipodsState> nextStates = new ArrayList<>();
-        if (!cursor.isInAllowedSpace() || charAt(cursor) == 0)
+        if (!cursor.isInAllowedSpace(diagram.length - 1) || charAt(cursor) == 0)
             return nextStates;
 
         int targetX = getTargetX(cursor);
 
-        if (diagram[2][targetX] != 0 && diagram[2][targetX] != charAt(cursor))
-            return nextStates;
-        if (diagram[1][targetX] != 0 && diagram[1][targetX] != charAt(cursor))
-            return nextStates;
+        boolean prevWasEmpty = false;
+        for (int i = diagram.length - 1; i > cursor.getY() ; --i) {
+            if (diagram[i][targetX] != 0) {
+                if (prevWasEmpty)
+                    return nextStates;
+                if (diagram[i][targetX] != charAt(cursor))
+                    return nextStates;
+            } else
+                prevWasEmpty = true;
+        }
 
         Cursor next = null;
 
@@ -189,9 +169,9 @@ public class AmphipodsState {
         }
 
         next = cursor.getCursorInDir(0, 1); // moving down
-        if (next.isInAllowedSpace() && charAt(next) == 0) {
+        if (next.isInAllowedSpace(diagram.length - 1) && charAt(next) == 0) {
             nextStates.add(new AmphipodsState(this, cursor, next, AmphipodState.MOVE_BACK));
-        } else if (!next.isInAllowedSpace() || charAt(cursor) == charAt(next)) {
+        } else if (!next.isInAllowedSpace(diagram.length - 1) || charAt(cursor) == charAt(next)) {
             nextStates.add(new AmphipodsState(this, cursor, cursor, AmphipodState.STABLE));
         }
 
@@ -214,9 +194,9 @@ public class AmphipodsState {
     }
 
     private char[][] getDiagramCopy() {
-        char[][] copy = new char[3][11];
-        System.arraycopy(diagram[0], 0, copy[0], 0, 11);
-        for (int i = 0; i < 2; ++i)
+        char[][] copy = new char[diagram.length][diagram[0].length];
+        System.arraycopy(diagram[0], 0, copy[0], 0, diagram[0].length);
+        for (int i = 0; i < diagram.length - 1; ++i)
             for (int j = 0; j < 4; ++j)
                 copy[i+1][(j+1)*2] = diagram[i+1][(j+1)*2];
         return copy;
@@ -232,7 +212,7 @@ public class AmphipodsState {
 
     public boolean isOrganizedCorrectly() {
         for (int i = 0; i < 4; ++i)
-            for (int j = 0; j < 2; ++j)
+            for (int j = 0; j < diagram.length - 1; ++j)
                 if (diagram[j+1][(i+1)*2] != 'A' + i)
                     return false;
         return true;
@@ -257,13 +237,21 @@ public class AmphipodsState {
         sb.append("#############\n#");
         for (int i = 0; i < 11; ++i)
             sb.append(diagram[0][i] == 0 ? "." : diagram[0][i]);
-        sb.append("#\n###");
+        sb.append("#\n");
+        sb.append("###");
         for (int i = 0; i < 4; ++i)
             sb.append(diagram[1][(i + 1) * 2] == 0 ? '.' : diagram[1][(i + 1) * 2]).append("#");
-        sb.append("##\n  #");
-        for (int i = 0; i < 4; ++i)
-            sb.append(diagram[2][(i + 1) * 2] == 0 ? '.' : diagram[2][(i + 1) * 2]).append("#");
-        sb.append("  \n  #########");
+        sb.append("##\n");
+        for (int j = 2; j < diagram.length; ++j) {
+            sb.append("  #");
+            for (int i = 0; i < 4; ++i)
+                sb.append(diagram[j][(i + 1) * 2] == 0 ? '.' : diagram[j][(i + 1) * 2]).append("#");
+            sb.append("  \n");
+        }
+        sb.append("  #########  ");
+        sb.append(state);
+        sb.append("  ");
+        sb.append(energy);
         return sb.toString();
     }
 }
