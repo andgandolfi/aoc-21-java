@@ -7,7 +7,8 @@ public class Runner implements Cloneable {
     private final List<Instruction> instructions;
     private State state;
 
-    private String pathTillHere = "";
+    private String minPathTillHere = "";
+    private String maxPathTillHere = "";
 
     private int cursor;
 
@@ -22,8 +23,7 @@ public class Runner implements Cloneable {
     }
 
     public Runner execute(String input) {
-        execute(new InputProvider(input));
-        return this;
+        return execute(new InputProvider(input));
     }
 
     public Runner execute(InputProvider inputProvider) {
@@ -40,16 +40,28 @@ public class Runner implements Cloneable {
         return state;
     }
 
-    public boolean hasFinished() {
-        return cursor >= instructions.size();
+    public String getMinPathTillHere() {
+        return minPathTillHere;
     }
 
-    public String getPathTillHere() {
-        return pathTillHere;
+    public void setMinPathTillHere(String minPathTillHere) {
+        this.minPathTillHere = minPathTillHere;
     }
 
-    public void addToPathTillHere(int pathPart) {
-        this.pathTillHere += pathPart;
+    public void addToMinPathTillHere(int pathPart) {
+        this.minPathTillHere += pathPart;
+    }
+
+    public String getMaxPathTillHere() {
+        return maxPathTillHere;
+    }
+
+    public void setMaxPathTillHere(String maxPathTillHere) {
+        this.maxPathTillHere = maxPathTillHere;
+    }
+
+    public void addToMaxPathTillHere(int pathPart) {
+        this.maxPathTillHere += pathPart;
     }
 
     @Override

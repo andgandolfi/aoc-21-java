@@ -5,18 +5,19 @@ import xyz.gandolfi.aoc21.Utils;
 import java.util.*;
 
 public class Main {
-    private static Set<Runner> executeRunners(Set<Runner> runners, boolean keepMax) {
+    private static Set<Runner> executeRunners(Set<Runner> runners) {
         Map<Runner, Runner> uniqueRunners = new HashMap<>();
         for (Runner r : runners)
             for (int i = 9; i > 0; --i) {
                 Runner executedRunner = r.clone().execute(i);
-                executedRunner.addToPathTillHere(i);
+                executedRunner.addToMinPathTillHere(i);
+                executedRunner.addToMaxPathTillHere(i);
                 if (uniqueRunners.containsKey(executedRunner)) {
                     Runner cachedRunner = uniqueRunners.get(executedRunner);
-                    if (keepMax && executedRunner.getPathTillHere().compareTo(cachedRunner.getPathTillHere()) > 0)
-                        uniqueRunners.put(executedRunner, executedRunner);
-                    if (!keepMax && executedRunner.getPathTillHere().compareTo(cachedRunner.getPathTillHere()) < 0)
-                        uniqueRunners.put(executedRunner, executedRunner);
+                    if (executedRunner.getMaxPathTillHere().compareTo(cachedRunner.getMaxPathTillHere()) > 0)
+                        cachedRunner.setMaxPathTillHere(executedRunner.getMaxPathTillHere());
+                    if (executedRunner.getMinPathTillHere().compareTo(cachedRunner.getMinPathTillHere()) < 0)
+                        cachedRunner.setMinPathTillHere(executedRunner.getMinPathTillHere());
                 }
                 else
                     uniqueRunners.put(executedRunner, executedRunner);
@@ -24,29 +25,30 @@ public class Main {
         return new HashSet<>(uniqueRunners.values());
     }
 
-    private static String findMaxModelNumber(Runner initRunner) {
+    private static Set<Runner> executeRunnerTillEnd(Runner initRunner) {
         Set<Runner> runners = new HashSet<>(List.of(initRunner));
-        for (int i = 0; i < 14; ++i) {
-            runners = executeRunners(runners, true);
+        for (int i = 1; i <= 14; ++i) {
+            runners = executeRunners(runners);
+            System.out.println(i + " input position of 14 processed");
         }
+        return runners;
+    }
+
+    private static String findMaxModelNumber(Set<Runner> runners) {
         String largestModelNumber = "";
         for (Runner r : runners)
             if (r.getState().getZ() == 0 &&
-                    r.getPathTillHere().compareTo(largestModelNumber) > 0)
-                largestModelNumber = r.getPathTillHere();
+                    r.getMaxPathTillHere().compareTo(largestModelNumber) > 0)
+                largestModelNumber = r.getMaxPathTillHere();
         return largestModelNumber;
     }
 
-    private static String findMinModelNumber(Runner initRunner) {
-        Set<Runner> runners = new HashSet<>(List.of(initRunner));
-        for (int i = 0; i < 14; ++i) {
-            runners = executeRunners(runners, false);
-        }
+    private static String findMinModelNumber(Set<Runner> runners) {
         String smallestModelNumber = "99999999999999";
         for (Runner r : runners)
             if (r.getState().getZ() == 0 &&
-                    r.getPathTillHere().compareTo(smallestModelNumber) < 0)
-                smallestModelNumber = r.getPathTillHere();
+                    r.getMinPathTillHere().compareTo(smallestModelNumber) < 0)
+                smallestModelNumber = r.getMinPathTillHere();
         return smallestModelNumber;
     }
 
@@ -58,14 +60,13 @@ public class Main {
             .map(Instruction::parse)
             .toList();
 
-        Runner runner = new Runner(instructions);
-
-        System.out.println("This is gonna take a few minutes, please be patient...\n");
+        System.out.println("This is gonna take a few minutes, please be patient...");
+        Set<Runner> finalRunners = executeRunnerTillEnd(new Runner(instructions));
 
         System.out.print("Day 24a: ");
-        System.out.println(findMaxModelNumber(runner));
+        System.out.println(findMaxModelNumber(finalRunners));
 
         System.out.print("Day 24b: ");
-        System.out.println(findMinModelNumber(runner));
+        System.out.println(findMinModelNumber(finalRunners));
     }
 }
